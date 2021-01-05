@@ -1,17 +1,19 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <AppContent/>
+    <TheAppHeader/>
+    <TheAppContent/>
   </div>
 </template>
 
 <script>
-import AppContent from './components/AppContent.vue'
+import TheAppHeader from './components/TheAppHeader.vue'
+import TheAppContent from './components/TheAppContent.vue'
 
 export default {
   name: 'App',
   components: {
-    AppContent
+    TheAppHeader,
+    TheAppContent
   }
 }
 </script>
