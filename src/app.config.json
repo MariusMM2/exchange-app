@@ -1,0 +1,34 @@
+{
+  "api": {
+    "fiat": {
+      "name": "exchangeratesapi",
+      "baseUrl": "https://api.exchangeratesapi.io",
+      "endpoint": "/latest"
+    },
+    "crypto": {
+      "name": "binance",
+      "baseUrl": "https://api.binance.com",
+      "endpoint": "/api/v3/ticker/price"
+    },
+    "cryptoNames": {
+      "name": "cryptonator",
+      "baseUrl": "https://www.cryptonator.com",
+      "endpoint": "/api/currencies"
+    }
+  },
+  "app": {
+    "useRealCryptoNames": false,
+    "currencyTypes": [
+      {
+        "id": "fiat",
+        "name": "Fiat"
+      },
+      {
+        "id": "crypto",
+        "name": "Crypto"
+      }
+    ],
+    "defaultCurrencyType": "fiat",
+    "defaultCurrency": "eur"
+  }
+}

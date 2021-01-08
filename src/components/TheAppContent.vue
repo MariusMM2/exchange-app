@@ -1,25 +1,16 @@
 <template>
   <div id="content">
-    <TheCryptoConverter/>
-    <TheFiatConverter/>
-    <TheCryptoFiatConverter/>
-    <TheFiatCryptoConverter/>
+    <TheCurrencyConverter/>
   </div>
 </template>
 
 <script>
-import TheCryptoConverter from "@/components/TheCryptoConverter";
-import TheFiatConverter from "@/components/TheFiatConverter";
-import TheCryptoFiatConverter from "@/components/TheCryptoFiatConverter";
-import TheFiatCryptoConverter from "@/components/TheFiatCryptoConverter";
+import TheCurrencyConverter from "@/components/TheCurrencyConverter";
 
 export default {
-  name: 'AppContent',
+  name: 'TheAppContent',
   components: {
-    TheFiatConverter,
-    TheCryptoConverter,
-    TheCryptoFiatConverter,
-    TheFiatCryptoConverter,
+    TheCurrencyConverter,
   }
 }
 </script>
