@@ -1,28 +1,28 @@
 {
-  "api": {
-    "fiat": {
-      "name": "exchangeratesapi",
-      "baseUrl": "https://api.exchangeratesapi.io",
-      "endpoint": "/latest"
-    },
-    "crypto": {
-      "name": "binance",
-      "baseUrl": "https://api.binance.com/api/v3",
-      "endpoint": "/ticker/price"
-    }
-  },
-  "app": {
-    "currencyTypes": [
-      {
-        "id": "fiat",
-        "name": "Fiat"
+  "currencyTypes": [
+    {
+      "id": "fiat",
+      "name": "Fiat",
+      "api": {
+        "name": "exchangeratesapi",
+        "baseUrl": "https://api.exchangeratesapi.io",
+        "endpoint": "/latest"
       },
-      {
-        "id": "crypto",
-        "name": "Crypto"
-      }
-    ],
+      "defaultCurrency": "eur"
+    },
+    {
+      "id": "crypto",
+      "name": "Crypto",
+      "api": {
+        "name": "binance",
+        "baseUrl": "https://api.binance.com/api/v3",
+        "endpoint": "/ticker/price"
+      },
+      "defaultCurrency": "btc"
+    }
+  ],
+  "app": {
     "defaultCurrencyType": "fiat",
-    "defaultCurrency": "eur"
+    "defaultCurrencySymbol": "eur"
   }
 }

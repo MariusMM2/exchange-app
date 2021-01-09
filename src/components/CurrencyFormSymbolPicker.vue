@@ -1,6 +1,5 @@
 <template>
   <div>
-    <label for="searchField">Currency</label>
     <input id="searchField"
            type="search"
            autocomplete="off"
@@ -8,8 +7,8 @@
            v-model.trim="searchQuery"
            @focus="openDropdown">
     <div v-bind:id="dropdownId" class="dropdown">
-      <a href="#"
-         v-for="currency in currencies"
+      <a v-for="currency in currencies"
+         href="#"
          @click="handleCurrencyClick(currency)"
          :key="currency[0]">
         {{ formatCurrency(currency) }}
@@ -20,46 +19,53 @@
 
 <script>
 export default {
-  name: "CurrencyConverterPicker",
+  name: "CurrencyConverterSymbolPicker",
+
   props: {
     id: {
       type: String,
       required: true,
     },
-    currencies : {
+    currencies: {
       type: Array,
       required: true,
     }
   },
+
   data: function () {
     return {
       searchQuery: "",
       selectedCurrency: undefined,
     }
   },
+
   computed: {
     dropdownId() {
       return `dropdown-${this.id}'`
     }
   },
+
   watch: {
     searchQuery: function (newQuery) {
       this.filterFunction(newQuery);
     },
     selectedCurrency: function (newCurrency) {
-      this.$emit('currency-selected-event', newCurrency);
+      this.$emit('select', newCurrency);
     }
   },
-  mounted() {
+
+  created() {
     this.searchQuery = this.formatCurrency(this.currencies[0]);
     this.selectedCurrency = this.currencies[0][0];
   },
+
   methods: {
     handleCurrencyClick(currency) {
       this.closeDropdown();
       this.searchQuery = this.formatCurrency(currency);
       this.selectedCurrency = currency[0];
     },
+
     filterFunction(newQuery) {
       const dropdown = document.getElementById(this.dropdownId);
       const currencies = dropdown.getElementsByTagName("a");
@@ -71,12 +77,15 @@ export default {
             : "none";
       }
     },
+
     formatCurrency(currency) {
       return `${currency[1]} (${currency[0]})`;
     },
+
     openDropdown() {
       document.getElementById(this.dropdownId).classList.add('show');
     },
+
     closeDropdown() {
       document.getElementById(this.dropdownId).classList.remove('show');
     },

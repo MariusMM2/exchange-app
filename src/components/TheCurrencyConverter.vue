@@ -1,34 +1,23 @@
 <template>
   <div class="frame">
     <div>
-      <label for="originCurrencyType">From</label>
-      <select id="originCurrencyType" v-model="origin.currencyType">
-        <option v-for="type in currencyTypes" v-bind:value="type.id" v-bind:key="type.id">
-          {{ type.name }}
-        </option>
-      </select>
+      <CurrencyForm
+          title="From"
+          :currency-types="config.currencyTypes"
+          @input="originCurrency = $event"/>
       <br>
-      <CurrencyConverterPicker
-          id="origin"
-          :currencies="originCurrencyModel.currencies"
-          @currency-selected-event="handleOriginCurSelected"/>
-      <br>
-      <label for="originAmount">Amount</label>
-      <input type="number" id="originAmount" v-model.number="origin.amount">
+      <input
+          type="number"
+          placeholder="Enter desired amount..."
+          v-model.number="originAmount">
     </div>
     <br>
     <div>
-      <label for="targetCurrencyType">To</label>
-      <select id="targetCurrencyType" v-model="target.currencyType" @select="convert">
-        <option v-for="type in currencyTypes" v-bind:value="type.id" v-bind:key="type.id">
-          {{ type.name }}
-        </option>
-      </select>
+      <CurrencyForm
+          title="To"
+          :currency-types="config.currencyTypes"
+          @input="targetCurrency = $event"/>
       <br>
-      <CurrencyConverterPicker
-          id="target"
-          :currencies="targetCurrencyModel.currencies"
-          @currency-selected-event="handleTargetCurSelected"/>
     </div>
     <button @click="convert">Calculate</button>
     <p>{{ resultMessage }}</p>
@@ -36,96 +25,63 @@
 </template>
 
 <script>
-import * as config from "@/app.config.json";
-import {CryptoCurrencyModel, FiatCurrencyModel} from "@/models/currency.model";
-import CurrencyConverterPicker from "@/components/CurrencyConverterPicker";
+import config from "@/app.config.json";
+import currencyController from "@/models/currencies.controller";
+import CurrencyForm from "@/components/CurrencyForm";
 
 export default {
   name: "TheCurrencyConverter",
+
   components: {
-    CurrencyConverterPicker
+    CurrencyForm,
   },
+
   data() {
     return {
-      origin: {
-        currencyType: undefined,
-        currency: undefined,
-        amount: 0,
+      originCurrency: {
+        type: undefined,
+        symbol: undefined,
       },
-      target: {
-        currencyType: undefined,
-        currency: undefined,
-        amount: undefined,
+      targetCurrency: {
+        type: undefined,
+        symbol: undefined,
       },
-      currencyTypes: config.app.currencyTypes,
-      resultMessage: '',
+      originAmount: undefined,
+      resultMessage: ''
     }
   },
+
   computed: {
-    originCurrencyCode: function () {
-      return this.origin.currency.toUpperCase();
-    },
-    targetCurrencyCode: function () {
-      return this.target.currency.toUpperCase();
-    },
-    originCurrencyModel: function () {
-      return this.getModelFor(this.origin.currencyType);
-    },
-    targetCurrencyModel: function () {
-      return this.getModelFor(this.target.currencyType);
-    }
-  },
-  watch: {
-    'target.amount': function (newAmount) {
-      this.resultMessage = `${this.origin.amount} ${this.originCurrencyCode} = ${newAmount} ${this.targetCurrencyCode}`;
-    },
-    'origin.currencyType': function (newType) {
-      this.origin.model = this.getModelFor(newType);
-    },
-    'target.currencyType': function (newType) {
-      this.target.model = this.getModelFor(newType);
+    config: function () {
+      return config;
     },
   },
+
   methods: {
     getModelFor(currencyType) {
-      switch (currencyType) {
-        case 'fiat':
-          return FiatCurrencyModel;
-        case 'crypto':
-          return CryptoCurrencyModel;
-      }
+      return currencyController.models[currencyType];
     },
-    handleOriginCurSelected(currency) {
-      this.origin.currency = currency;
-    },
-    handleTargetCurSelected(currency) {
-      this.target.currency = currency;
-    },
+
     async toEuroRatio(currencyType, currency) {
       return await this.getModelFor(currencyType).getCurrencyRatioToEuro(currency.toUpperCase());
     },
-    async convert() {
-      const originToEuroRatio = await this.toEuroRatio(this.origin.currencyType, this.origin.currency);
-      const targetToEuroRatio = await this.toEuroRatio(this.target.currencyType, this.target.currency);
-      const originEuro = this.origin.amount * originToEuroRatio;
 
-      this.target.amount = (originEuro / targetToEuroRatio).toFixed(4);
+    async convert() {
+      const originToEuroRatio = await this.toEuroRatio(this.originCurrency.type, this.originCurrency.symbol);
+      const targetToEuroRatio = await this.toEuroRatio(this.targetCurrency.type, this.targetCurrency.symbol);
+      const originEuro = this.originAmount * originToEuroRatio;
+      const targetAmount = (originEuro / targetToEuroRatio).toFixed(4);
+
+      this.resultMessage = `${this.originAmount} ${this.originCurrency.symbol.toUpperCase()} =
+      ${targetAmount} ${this.targetCurrency.symbol.toUpperCase()}`;
     }
   },
-  beforeMount() {
-    this.target.amount = 0;
-    this.origin.currencyType = config.app.defaultCurrencyType;
-    this.target.currencyType = config.app.defaultCurrencyType;
-    this.origin.currency = config.app.defaultCurrency;
-    this.target.currency = config.app.defaultCurrency;
-  }
 }
 </script>
 
 <style scoped>
 .frame {
   width: 300px;
-  /*height: 100px;*/
   border: 1px solid black;
   padding: 10px 20px 20px 20px;
   margin: auto;
