@@ -7,17 +7,11 @@
     },
     "crypto": {
       "name": "binance",
-      "baseUrl": "https://api.binance.com",
-      "endpoint": "/api/v3/ticker/price"
-    },
-    "cryptoNames": {
-      "name": "cryptonator",
-      "baseUrl": "https://www.cryptonator.com",
-      "endpoint": "/api/currencies"
+      "baseUrl": "https://api.binance.com/api/v3",
+      "endpoint": "/ticker/price"
     }
   },
   "app": {
-    "useRealCryptoNames": false,
     "currencyTypes": [
       {
         "id": "fiat",
