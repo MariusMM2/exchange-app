@@ -1,10 +1,7 @@
-import axios from 'axios';
 import CacheService from "@/services/cache.service";
 import {queriedUrl} from "@/utils/url.util";
 
 export default class ApiService {
-    _axiosInstance = axios.create({});
-
     constructor(name, baseUrl, endpoint) {
         this.name = name;
         this.baseUrl = baseUrl;
@@ -20,29 +17,14 @@ export default class ApiService {
     async getCustom(queryParams) {
         const requestUrl = queriedUrl(this.baseUrl + this.endpoint, queryParams);
 
-        const cachedData = await this.cache.load(requestUrl);
+        const cachedResponse = await this.cache.load(requestUrl);
 
-        if (cachedData) {
-            return cachedData;
+        if (cachedResponse) {
+            return cachedResponse;
         }
 
-        try {
-            const response = await this._axiosInstance.get(requestUrl);
+        await this.cache.save(requestUrl);
 
-            await this.cache.save(requestUrl, response.data);
-
-            return response.data;
-        } catch (e) {
-            if (e.response) {
-                if (e.response.status === 404) {
-                    return 0;
-                }
-                else {
-                    console.log(e);
-                }
-            } else {
-                console.log(e);
-            }
-        }
+        return await this.cache.load(requestUrl);
     }
 }

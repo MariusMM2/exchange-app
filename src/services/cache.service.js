@@ -1,17 +1,32 @@
 export default class CacheService {
     constructor(name) {
         this.name = name;
+        this.cacheName = 'exchange-api-' + this.name;
     }
 
-    /*
-    todo
+    /**
+     *
+     * @param {string} url
+     * @returns {Promise<boolean|*>}
      */
-
-    save(key, value) {
-        console.log(`${this.name}: saving ${key}: ${value}`);
+    async save(url) {
+        const cacheStorage = await caches.open(this.cacheName);
+        await cacheStorage.add(url);
     }
 
-    load(key) {
-        console.log(`${this.name}: loading ${key}`);
+    /**
+     *
+     * @param url
+     * @returns {Promise<boolean>}
+     */
+    async load(url) {
+        const cacheStorage = await caches.open(this.cacheName);
+        const cachedResponse = await cacheStorage.match(url);
+
+        if (!cachedResponse || !cachedResponse.ok) {
+            return false;
+        }
+
+        return await cachedResponse.json();
     }
 }
