@@ -9,7 +9,7 @@
     <div v-bind:id="dropdownId" class="dropdown">
       <a v-for="currency in currencies"
          href="#"
-         @click="handleCurrencyClick(currency)"
+         @click="handleClickCurrency(currency[0])"
          :key="currency[0]">
         {{ formatCurrency(currency) }}
       </a>
@@ -28,6 +28,10 @@ export default {
     },
     currencies: {
       type: Array,
+      required: true,
+    },
+    value: {
+      type: String,
       required: true,
     }
   },
@@ -51,19 +55,27 @@ export default {
     },
     selectedCurrency: function (newCurrency) {
       this.$emit('select', newCurrency);
+    },
+    value: function (newValue) {
+      this.update(newValue);
     }
   },
 
   created() {
-    this.searchQuery = this.formatCurrency(this.currencies[0]);
-    this.selectedCurrency = this.currencies[0][0];
+    this.update(this.value);
   },
 
   methods: {
-    handleCurrencyClick(currency) {
-      this.closeDropdown();
+    update(newCurrency) {
+      newCurrency = newCurrency.toUpperCase();
+      const currency = this.currencies.find(currency => currency[0] === newCurrency);
       this.searchQuery = this.formatCurrency(currency);
       this.selectedCurrency = currency[0];
+    },
+
+    handleClickCurrency(currency) {
+      this.closeDropdown();
+      this.update(currency);
     },
 
     filterFunction(newQuery) {

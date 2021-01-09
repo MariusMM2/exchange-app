@@ -1,8 +1,9 @@
 export default class CurrencyModel {
-    constructor(currencies, service) {
+    constructor(currencies, service, defaultSymbol) {
         this.service = service;
         this.currencies = Object.entries(currencies).sort((a, b) => a[1].localeCompare(b[1]));
         this.currenciesDict = currencies;
+        this.defaultSymbol = defaultSymbol;
     }
 
     isValidCurrency(currencyCode) {

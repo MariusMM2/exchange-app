@@ -22,7 +22,7 @@ class CurrenciesController {
 
             service.ratioToEuro = convertFuncs[currencyType.id];
 
-            this.models[currencyType.id] = new CurrencyModel(file, service)
+            this.models[currencyType.id] = new CurrencyModel(file, service, currencyType.defaultSymbol)
         }
     }
 }

@@ -8,7 +8,7 @@
         "baseUrl": "https://api.exchangeratesapi.io",
         "endpoint": "/latest"
       },
-      "defaultCurrency": "eur"
+      "defaultSymbol": "eur"
     },
     {
       "id": "crypto",
@@ -18,7 +18,7 @@
         "baseUrl": "https://api.binance.com/api/v3",
         "endpoint": "/ticker/price"
       },
-      "defaultCurrency": "btc"
+      "defaultSymbol": "btc"
     }
   ],
   "app": {

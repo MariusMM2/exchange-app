@@ -4,12 +4,13 @@
         :title="title"
         :options="currencyTypes.map(t => ({id: t.id, name: t.name}))"
         :value="type"
-        @select="type = $event; update()"/>
+        @select="handleSelectType"/>
     <br>
     <CurrencyFormSymbolPicker
         :id="title.toLowerCase()"
         :currencies="currencies"
-        @select="symbol = $event; update()"/>
+        :value="symbol"
+        @select="handleSelectSymbol"/>
   </div>
 </template>
 
@@ -61,6 +62,22 @@ export default {
         type: this.type,
         symbol: this.symbol,
       });
+    },
+
+    handleSelectType(newType) {
+      if (this.type !== newType) {
+        this.symbol = currencyController.models[newType].defaultSymbol;
+      }
+
+      this.type = newType;
+
+      this.update();
+    },
+
+    handleSelectSymbol(newSymbol) {
+      this.symbol = newSymbol;
+
+      this.update();
     },
   }
 }

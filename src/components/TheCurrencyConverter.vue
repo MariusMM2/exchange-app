@@ -67,10 +67,11 @@ export default {
     },
 
     async convert() {
+      this.originAmount = this.originAmount || 1;
       const originToEuroRatio = await this.toEuroRatio(this.originCurrency.type, this.originCurrency.symbol);
       const targetToEuroRatio = await this.toEuroRatio(this.targetCurrency.type, this.targetCurrency.symbol);
       const originEuro = this.originAmount * originToEuroRatio;
-      const targetAmount = (originEuro / targetToEuroRatio).toFixed(4);
+      const targetAmount = (originEuro / targetToEuroRatio).toFixed(8);
 
       this.resultMessage = `${this.originAmount} ${this.originCurrency.symbol.toUpperCase()} =
       ${targetAmount} ${this.targetCurrency.symbol.toUpperCase()}`;
