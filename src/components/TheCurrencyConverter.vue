@@ -3,7 +3,7 @@
     <div>
       <CurrencyForm
           title="From"
-          :currency-types="config.currencyTypes"
+          :currency-types="currencyTypes"
           @input="originCurrency = $event"/>
       <br>
       <input
@@ -15,7 +15,7 @@
     <div>
       <CurrencyForm
           title="To"
-          :currency-types="config.currencyTypes"
+          :currency-types="currencyTypes"
           @input="targetCurrency = $event"/>
       <br>
     </div>
@@ -25,8 +25,8 @@
 </template>
 
 <script>
-import config from "@/app.config.json";
-import currencyController from "@/models/currencies.controller";
+import setup from "@/apis/setup";
+import CurrencyTypesModel from "@/models/currencyTypes.model";
 import CurrencyForm from "@/components/CurrencyForm";
 
 export default {
@@ -47,19 +47,17 @@ export default {
         symbol: undefined,
       },
       originAmount: undefined,
+      currencyTypes: setup.apis.map(type => ({
+        id: type.id,
+        name: type.name,
+      })),
       resultMessage: ''
     }
   },
 
-  computed: {
-    config: function () {
-      return config;
-    },
-  },
-
   methods: {
     getModelFor(currencyType) {
-      return currencyController.models[currencyType];
+      return CurrencyTypesModel.types[currencyType];
     },
 
     async toEuroRatio(currencyType, currency) {

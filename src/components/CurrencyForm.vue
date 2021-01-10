@@ -1,13 +1,13 @@
 <template>
   <div>
     <AppDropdown
-        :title="title"
+        :title="name"
         :options="currencyTypes.map(t => ({id: t.id, name: t.name}))"
         :value="type"
         @select="handleSelectType"/>
     <br>
     <CurrencyFormSymbolPicker
-        :id="title.toLowerCase()"
+        :id="name.toLowerCase()"
         :currencies="currencies"
         :value="symbol"
         @select="handleSelectSymbol"/>
@@ -18,7 +18,7 @@
 import * as config from "@/app.config.json";
 import AppDropdown from "@/components/AppDropdown";
 import CurrencyFormSymbolPicker from "@/components/CurrencyFormSymbolPicker";
-import currencyController from "@/models/currencies.controller";
+import CurrencyTypesModel from "@/models/currencyTypes.model";
 
 export default {
   name: "CurrencyForm",
@@ -29,7 +29,7 @@ export default {
   },
 
   props: {
-    title: {
+    name: {
       type: String,
       required: true,
     },
@@ -48,7 +48,7 @@ export default {
 
   computed: {
     currencies: function () {
-      return currencyController.models[this.type].currencies;
+      return CurrencyTypesModel.types[this.type].currencies;
     },
   },
 
@@ -66,7 +66,7 @@ export default {
 
     handleSelectType(newType) {
       if (this.type !== newType) {
-        this.symbol = currencyController.models[newType].defaultSymbol;
+        this.symbol = CurrencyTypesModel.types[newType].defaultSymbol;
       }
 
       this.type = newType;
