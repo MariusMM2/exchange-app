@@ -18,18 +18,33 @@
 </template>
 
 <script>
+/**
+ * Component that displays a dropdown of currencies
+ * with a search field used to filter said currencies.
+ */
 export default {
   name: "CurrencyConverterSymbolPicker",
 
   props: {
+    /**
+     * The id of the picker, used by CSS selectors.
+     */
     id: {
       type: String,
       required: true,
     },
+    /**
+     * Possible currency choices, a list of
+     * two-element arrays where the first element is the
+     * currency symbol and the second is the currency name.
+     */
     currencies: {
       type: Array,
       required: true,
     },
+    /**
+     * Default selected currency symbol.
+     */
     value: {
       type: String,
       required: true,
@@ -44,18 +59,36 @@ export default {
   },
 
   computed: {
+    /**
+     * Formatted id for the dropdown element.
+     * @returns {string}
+     */
     dropdownId() {
       return `dropdown-${this.id}'`
     }
   },
 
   watch: {
+    /**
+     * Updates the filtered currencies
+     * whenever the search query changes.
+     */
     searchQuery: function (newQuery) {
-      this.filterFunction(newQuery);
+      this.filterCurrencies(newQuery);
     },
+    /**
+     * Emits an event when the selected currency
+     * changes.
+     * @event select
+     */
     selectedCurrency: function (newCurrency) {
       this.$emit('select', newCurrency);
     },
+    /**
+     * Updates the search query
+     * and the selected currency whenever
+     * the value attribute changes.
+     */
     value: function (newValue) {
       this.update(newValue);
     }
@@ -66,38 +99,69 @@ export default {
   },
 
   methods: {
+    /**
+     * Updates the search query
+     * and the selected currency using
+     * the provided currency.
+     * @param newCurrency New currency used to update
+     */
     update(newCurrency) {
       newCurrency = newCurrency.toUpperCase();
+
       const currency = this.currencies.find(currency => currency[0] === newCurrency);
+
       this.searchQuery = this.formatCurrency(currency);
       this.selectedCurrency = currency[0];
     },
 
+    /**
+     * Handles clicking a currency in the dropdown.
+     * @param currency Clicked currency
+     */
     handleClickCurrency(currency) {
       this.closeDropdown();
       this.update(currency);
     },
 
-    filterFunction(newQuery) {
+    /**
+     * Filters the displayed currencies
+     * based on the provided query.
+     * @param query Query used for filtering
+     */
+    filterCurrencies(query) {
+      // retrieves the dropdown element
       const dropdown = document.getElementById(this.dropdownId);
+      // retrieves the currencies elements
       const currencies = dropdown.getElementsByTagName("a");
 
       for (const currency of currencies) {
         const txtValue = currency.textContent || currency.innerText;
-        currency.style.display = txtValue.toUpperCase().indexOf(newQuery.toUpperCase()) > -1
+
+        // sets the display attribute to "none" if the currency does not match the query
+        // or "" (empty) otherwise
+        currency.style.display = txtValue.toUpperCase().indexOf(query.toUpperCase()) > -1
             ? ""
             : "none";
       }
     },
 
+    /**
+     * Formats the display string of a currency.
+     */
     formatCurrency(currency) {
       return `${currency[1]} (${currency[0]})`;
     },
 
+    /**
+     * Displays the dropdown.
+     */
     openDropdown() {
       document.getElementById(this.dropdownId).classList.add('show');
     },
 
+    /**
+     * Hides the dropdown.
+     */
     closeDropdown() {
       document.getElementById(this.dropdownId).classList.remove('show');
     },

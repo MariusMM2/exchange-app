@@ -9,6 +9,9 @@
 import TheAppHeader from './components/TheAppHeader.vue'
 import TheAppContent from './components/TheAppContent.vue'
 
+/**
+ * Component representing the entry point of the app.
+ */
 export default {
   name: 'App',
   components: {
